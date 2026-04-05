@@ -1,0 +1,23 @@
+[project]
+name = "fast-api-learning"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "bcrypt==4.0.1",
+    "cryptography",
+    "fastapi>=0.135.3",
+    "psycopg2-binary",
+    "PyMySQL",
+    "python-jose",
+    "python-multipart",
+    "SQLAlchemy",
+    "uvicorn>=0.43.0",
+    "passlib",
+    "pytest",
+    "httpx",
+    "pytest-asyncio",
+    "aiofiles",
+    "jinja2",
+]
