@@ -7,25 +7,31 @@ BOOKS = [
         "id": 1,
         "title": "The Song of Achilles",
         "author": "Madeleine Miller",
-        "category": "Fiction"
+        "category": "Fiction",
+        "year": "2012",
     },
     {
         "id": 2,
         "title": "Algorithms",
         "author": "Jeff Erickson",
-        "category": "Computer Science"
+        "category": "Computer Science",
+        "year": "1998",
     },
     {
         "id": 3,
         "title": "Neural Networks & Deep Learning",
         "author": "Michael Nielsen",
-        "category": "Computer Science"
+        "category": "Computer Science",
+        "year": "2015",
+
     },
     {
         "id": 4,
         "title": "The Handmaid's Tale",
         "author": "Margaret Atwood",
-        "category": "Fiction"
+        "category": "Fiction",
+        "year": "1980",
+
     }
 ]
 
@@ -45,3 +51,17 @@ async def get_category(category: str):
         if book.get("category", "").lower() == category.lower():
             response.append(book)
     return response
+
+@app.get("/books/{year}/")
+async def read_books_by_year_and_category(year: str, category: str):
+    """
+    Find books published in a given `year`,
+    and query for a certain `category` for this `year`.
+    """
+    year_books = [
+                    b for b in BOOKS
+                        if (b.get("year","")==year
+                            and b.get("category","").lower()==category.lower())
+                  ]
+    return year_books
+        
