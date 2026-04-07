@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import Body, FastAPI
 
 app = FastAPI()
 
@@ -64,4 +64,20 @@ async def read_books_by_year_and_category(year: str, category: str):
                             and b.get("category","").lower()==category.lower())
                   ]
     return year_books
+
+@app.post("/books/create_book")
+async def create_book(new_book = Body()):
+    BOOKS.append(new_book)
         
+@app.put("/books/update_book")
+async def update_book(updated_book = Body()):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].get("id") == updated_book.get("id"):
+            BOOKS[i] = updated_book
+            
+@app.delete("/books/delete_book/{id}")
+async def delete_book(id: int):
+    for i in range(len(BOOKS)):
+        if BOOKS[i].get("id") == id:
+            BOOKS.pop(i)
+            break
