@@ -1,4 +1,5 @@
 from fastapi import Body, FastAPI
+import copy
 
 app = FastAPI()
 
@@ -32,19 +33,26 @@ BOOKS = [
         "category": "Fiction",
         "year": "1980",
 
-    }
+    },
+    {
+        "id": 5,
+        "title": "Circle",
+        "author": "Madeleine Miller",
+        "category": "Fiction",
+        "year": "2018",
+    },
 ]
 
-@app.get("/books")
+@app.get("/books/all")
 async def read_all_books():
     return BOOKS
 
-@app.get("/books/{id}")
+@app.get("/books/by-id/{id}")
 async def read_book(id: int):    
     book = [b for b in BOOKS if b.get("id",0) == id]
     return book
         
-@app.get("/books/")
+@app.get("/books/by-category")
 async def get_category(category: str):
     response = []
     for book in BOOKS:
@@ -52,7 +60,7 @@ async def get_category(category: str):
             response.append(book)
     return response
 
-@app.get("/books/{year}/")
+@app.get("/books/by-year-and-category/{year}/")
 async def read_books_by_year_and_category(year: str, category: str):
     """
     Find books published in a given `year`,
@@ -81,3 +89,11 @@ async def delete_book(id: int):
         if BOOKS[i].get("id") == id:
             BOOKS.pop(i)
             break
+        
+@app.get("/books/get_books_by_author/")
+async def get_all_books_by_an_author(author: str):
+    response = []
+    for i in range(len(BOOKS)):
+        if BOOKS[i].get("author").lower() == author.lower():
+            response.append(BOOKS[i])
+    return response
