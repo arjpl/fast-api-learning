@@ -2,6 +2,7 @@ from typing import Optional
 
 from fastapi import FastAPI, Path, Query, HTTPException
 from pydantic import BaseModel, Field
+from starlette import status
 
 app = FastAPI()
 
@@ -55,11 +56,11 @@ BOOKS = [
     Book(10, "The Lord of the Rings", "J. R. R. Tolkien", "A high-fantasy epic that follows the journey of hobbit Frodo Baggins and his companions as they attempt to destroy a powerful ring that could bring about the downfall of Middle-earth.", 5, 1982),
 ]
 
-@app.get("/books")
+@app.get("/books", status_code=status.HTTP_200_OK)
 async def read_all_books():
     return BOOKS
 
-@app.post("/create-book")
+@app.post("/create-book", status_code=status.HTTP_201_CREATED)
 async def create_book(book_request: BookRequest):
     new_book = Book(**book_request.model_dump())
     BOOKS.append(find_book_id(new_book))
@@ -71,14 +72,14 @@ def find_book_id(book: Book):
         book.id = 1
     return book
 
-@app.get("/books/id/{book_id}")
+@app.get("/books/id/{book_id}", status_code=status.HTTP_200_OK)
 async def read_book(book_id: int = Path(gt=0)):
     for book in BOOKS:
         if book.id == book_id:
             return book
     raise HTTPException(status_code=404, detail=f"Book with id: {book_id} not found")
         
-@app.get("/books/")
+@app.get("/books/", status_code=status.HTTP_200_OK)
 async def read_book_by_rating(book_rating: int = Query(ge=1, le=5)):
     response = []
     for book in BOOKS:
@@ -86,7 +87,7 @@ async def read_book_by_rating(book_rating: int = Query(ge=1, le=5)):
             response.append(book)
     return response
 
-@app.put("/books/update")
+@app.put("/books/update", status_code=status.HTTP_204_NO_CONTENT)
 async def update_book(book: BookRequest):
     book_changed = False
     for i in range(len(BOOKS)):
@@ -96,7 +97,7 @@ async def update_book(book: BookRequest):
     if not book_changed:
         raise HTTPException(status_code=404, detail=f"Book with id: {book.id} not found")
             
-@app.delete("/books/id/{book_id}")
+@app.delete("/books/id/{book_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_book(book_id: int = Path(ge=0)):
     book_changed = False
     for i in range(len(BOOKS)):
@@ -107,7 +108,7 @@ async def delete_book(book_id: int = Path(ge=0)):
     if not book_changed:
         raise HTTPException(status_code=404, detail=f"Book with id: {book_id} not found")
         
-@app.get("/books/published_year")
+@app.get("/books/published_year", status_code=status.HTTP_200_OK)
 async def filter_by_published_year(year: int = Query(ge=0, le=2027)):
     response = []
     for book in BOOKS:
